@@ -1,1067 +1,404 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dành Cho Em!</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Quicksand:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ff9a9e 100%);
-            background-attachment: fixed;
-            min-height: 100vh;
-            font-family: 'Quicksand', sans-serif;
-            overflow-x: hidden;
-            position: relative;
-        }
-        
-        /* Container chính */
-        .container {
-            width: 100%;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 90px 15px 50px 15px;
-        }
-        
-        /* Tiêu đề */
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 999;
-            background: linear-gradient(to bottom, rgba(255, 236, 210, 0.95) 0%, rgba(255, 236, 210, 0.8) 70%, transparent 100%);
-            padding: 15px 20px;
-            text-align: center;
-        }
-        
-        .title {
-            font-family: 'Dancing Script', cursive;
-            font-size: 28px;
-            font-weight: 700;
-            color: #fff;
-            text-shadow: 
-                2px 2px 0px #ff6b9d,
-                3px 3px 0px #c06c84,
-                4px 4px 8px rgba(0, 0, 0, 0.3);
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        
-        /* Nút điều khiển */
-        .controls {
-            position: fixed;
-            top: 70px;
-            right: 15px;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .music-toggle {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #ff6b9d 0%, #c06c84 100%);
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .music-toggle:active {
-            transform: scale(0.95);
-        }
-        
-        .music-toggle.playing {
-            animation: pulse 1.5s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
-            50% { box-shadow: 0 4px 20px rgba(255, 107, 157, 0.8); }
-        }
-        
-        .music-controls {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .control-btn {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .control-btn:active {
-            transform: scale(0.95);
-        }
-        
-        .gallery-btn {
-            padding: 10px 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 13px;
-            font-family: 'Quicksand', sans-serif;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .gallery-btn:active {
-            transform: scale(0.95);
-        }
-        
-        /* Khung ảnh */
-        .photo-section {
-            width: 100%;
-            max-width: 500px;
-            margin-bottom: 30px;
-        }
-        
-        .photo-frame {
-            background: linear-gradient(135deg, #ffffff 0%, #fef7f9 100%);
-            border-radius: 20px;
-            padding: 25px 15px 15px 15px;
-            box-shadow: 0 15px 50px rgba(255, 107, 157, 0.2),
-                        0 5px 15px rgba(0, 0, 0, 0.1);
-            position: relative;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            overflow: hidden;
-        }
-        
-        .photo-frame::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, 
-                #ff6b9d 0%, 
-                #ffa8c5 25%, 
-                #ff6b9d 50%, 
-                #ffa8c5 75%, 
-                #ff6b9d 100%);
-            background-size: 200% 100%;
-            animation: shimmer 3s linear infinite;
-        }
-        
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-        
-        .photo-label {
-            text-align: center;
-            font-family: 'Dancing Script', cursive;
-            font-size: 26px;
-            color: #ff6b9d;
-            margin-bottom: 20px;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(255, 107, 157, 0.2);
-            position: relative;
-            display: inline-block;
-            width: 100%;
-        }
-        
-        .photo-label::before,
-        .photo-label::after {
-            content: '✨';
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 18px;
-            animation: sparkle 2s infinite alternate;
-        }
-        
-        .photo-label::before {
-            left: 10px;
-        }
-        
-        .photo-label::after {
-            right: 10px;
-            animation-delay: 0.5s;
-        }
-        
-        @keyframes sparkle {
-            0%, 100% { opacity: 0.5; transform: translateY(-50%) scale(1); }
-            50% { opacity: 1; transform: translateY(-50%) scale(1.3); }
-        }
-        
-        /* Slideshow container */
-        .slideshow-container {
-            position: relative;
-            width: 100%;
-            height: 400px;
-            overflow: hidden;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(255, 107, 157, 0.3),
-                        0 0 0 1px rgba(255, 255, 255, 0.1);
-            background: linear-gradient(135deg, #ffeef4 0%, #fff5f8 100%);
-        }
-        
-        .slide {
-            display: none;
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-        
-        .slide.active {
-            display: block;
-            animation: slideZoomIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        
-        .slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            cursor: pointer;
-            transition: transform 0.5s ease;
-            border-radius: 20px;
-        }
-        
-        .slide img:hover {
-            transform: scale(1.05);
-        }
-        
-        @keyframes slideZoomIn {
-            from { 
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to { 
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-        
-        /* Overlay gradient cho slideshow */
-        .slideshow-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to bottom, 
-                rgba(0,0,0,0) 0%, 
-                rgba(0,0,0,0) 60%, 
-                rgba(0,0,0,0.1) 100%);
-            pointer-events: none;
-            z-index: 1;
-            border-radius: 20px;
-        }
-        
-        /* Nút điều khiển slideshow */
-        .slide-controls {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 15px;
-            box-sizing: border-box;
-            z-index: 10;
-        }
-        
-        .slide-btn {
-            background: linear-gradient(135deg, #ff6b9d 0%, #ff8eb3 100%);
-            border: 2px solid rgba(255, 255, 255, 0.9);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 22px;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(255, 107, 157, 0.4);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0.85;
-            backdrop-filter: blur(5px);
-        }
-        
-        .slide-btn:hover {
-            opacity: 1;
-            transform: scale(1.1);
-            box-shadow: 0 6px 25px rgba(255, 107, 157, 0.6);
-        }
-        
-        .slide-btn:active {
-            transform: scale(0.95);
-        }
-        
-        /* Chấm chỉ số ảnh */
-        .slide-dots {
-            text-align: center;
-            margin-top: 20px;
-            padding: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .dot {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ddd 0%, #ccc 100%);
-            margin: 0;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-        
-        .dot:hover {
-            transform: scale(1.3);
-            background: linear-gradient(135deg, #ffb3d0 0%, #ff8eb3 100%);
-        }
-        
-        .dot.active {
-            background: linear-gradient(135deg, #ff6b9d 0%, #ff4d8f 100%);
-            transform: scale(1.4);
-            box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.2),
-                        0 4px 12px rgba(255, 107, 157, 0.4);
-        }
-        
-        .dot.active::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 6px;
-            height: 6px;
-            background: white;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
-        }
-        
-        /* Toggle view button */
-        .view-toggle {
-            text-align: center;
-            margin-top: 20px;
-        }
-        
-        .toggle-btn {
-            padding: 12px 28px;
-            background: linear-gradient(135deg, #ff6b9d 0%, #c06c84 100%);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
-            transition: all 0.3s ease;
-            font-family: 'Quicksand', sans-serif;
-            letter-spacing: 0.5px;
-        }
-        
-        .toggle-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 107, 157, 0.5);
-            background: linear-gradient(135deg, #ff8eb3 0%, #d088a0 100%);
-        }
-        
-        .toggle-btn:active {
-            transform: scale(0.95);
-        }
-        
-        /* Grid view */
-        .photo-grid {
-            display: none;
-            flex-direction: column;
-            gap: 12px;
-            max-height: 500px;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        .photo-grid.show {
-            display: flex;
-        }
-        
-        .photo-grid img {
-            width: 100%;
-            height: auto;
-            max-height: 300px;
-            object-fit: cover;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .photo-grid img:active {
-            transform: scale(0.98);
-        }
-        
-        /* Phong bì - LOẠI BỎ */
-        /* .envelope-section bị xóa */
-        
-        /* Lá thư mới */
-        .letter-section {
-            width: 100%;
-            max-width: 500px;
-            margin-bottom: 40px;
-        }
-        
-        .letter-card {
-            background: linear-gradient(135deg, #ffffff 0%, #fff9fb 100%);
-            border-radius: 20px;
-            padding: 30px 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            position: relative;
-            border: 3px solid #ffe5ec;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .letter-card:active {
-            transform: scale(0.98);
-        }
-        
-        .letter-card::before {
-            content: '💌';
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 40px;
-            animation: heartbeat 1.5s ease-in-out infinite;
-        }
-        
-        .letter-header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px dashed #ffe5ec;
-        }
-        
-        .letter-title {
-            font-family: 'Dancing Script', cursive;
-            font-size: 28px;
-            color: #ff6b9d;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-        
-        .letter-subtitle {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 14px;
-            color: #999;
-            font-style: italic;
-        }
-        
-        .letter-content {
-            font-family: 'Dancing Script', cursive;
-            font-size: 18px;
-            line-height: 2;
-            color: #555;
-            text-align: center;
-            padding: 10px 0;
-        }
-        
-        .letter-content p {
-            margin: 15px 0;
-        }
-        
-        .letter-footer {
-            text-align: right;
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 2px dashed #ffe5ec;
-        }
-        
-        .letter-signature {
-            font-family: 'Dancing Script', cursive;
-            font-size: 20px;
-            color: #ff6b9d;
-            font-weight: 600;
-        }
-        
-        .letter-decorations {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 20px;
-            opacity: 0.3;
-        }
-        
-        /* Hiệu ứng khi click */
-        .letter-card.opened {
-            animation: letterOpen 0.5s ease;
-        }
-        
-        @keyframes letterOpen {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        /* Bỏ phần envelope cũ */
-        
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .modal.show {
-            display: flex;
-        }
-        
-        .modal-content {
-            background: white;
-            padding: 25px 20px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
-            animation: popIn 0.3s ease;
-        }
-        
-        @keyframes popIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        
-        .modal-content h2 {
-            margin: 0 0 20px 0;
-            color: #ff6b9d;
-            font-family: 'Dancing Script', cursive;
-            font-size: 28px;
-            text-align: center;
-        }
-        
-        .modal-content h3 {
-            color: #555;
-            font-size: 16px;
-            margin: 15px 0 10px 0;
-        }
-        
-        .music-item {
-            padding: 12px;
-            margin: 6px 0;
-            background: #f9f9f9;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .music-item:active {
-            transform: scale(0.98);
-        }
-        
-        .music-item.active {
-            background: linear-gradient(135deg, #ff6b9d 0%, #c06c84 100%);
-            color: white;
-        }
-        
-        .image-gallery {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-        
-        .image-item {
-            aspect-ratio: 1;
-            overflow: hidden;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .image-item:active {
-            transform: scale(0.95);
-        }
-        
-        .image-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .modal-buttons {
-            margin-top: 20px;
-        }
-        
-        .modal-buttons button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Quicksand', sans-serif;
-            font-weight: 600;
-            font-size: 14px;
-            background: #f0f0f0;
-            color: #666;
-            transition: all 0.3s ease;
-        }
-        
-        .modal-buttons button:active {
-            transform: scale(0.98);
-        }
-        
-        /* Modal phóng to ảnh */
-        .image-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 3000;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .image-modal.show {
-            display: flex;
-        }
-        
-        .image-modal img {
-            max-width: 95%;
-            max-height: 95vh;
-            object-fit: contain;
-            border-radius: 8px;
-        }
-        
-        /* Confetti */
-        @keyframes confettiFall {
-            to {
-                transform: translateY(100vh) rotate(720deg);
-                opacity: 0;
-            }
-        }
-        
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            animation: confettiFall 2s linear forwards;
-            pointer-events: none;
-        }
-        
-        /* Responsive cho màn hình nhỏ */
-        @media (max-width: 480px) {
-            .slideshow-container {
-                height: 320px;
-            }
-            
-            .slide-btn {
-                width: 42px;
-                height: 42px;
-                font-size: 20px;
-            }
-            
-            .photo-label {
-                font-size: 22px;
-            }
-            
-            .toggle-btn {
-                padding: 10px 22px;
-                font-size: 14px;
-            }
-            
-            .dot {
-                width: 10px;
-                height: 10px;
-            }
-        }
-        
-        @media (max-width: 360px) {
-            .slideshow-container {
-                height: 280px;
-            }
-            
-            .photo-frame {
-                padding: 20px 12px 12px 12px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>AI-Friendly Source Flattener</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- JSZip CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #020617;
+      border-radius: 1.5rem;
+      padding: 24px;
+      max-width: 960px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.75);
+      border: 1px solid #1f2937;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h1 span.logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #22d3ee, #4f46e5);
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    p.sub {
+      margin-top: 4px;
+      margin-bottom: 16px;
+      color: #9ca3af;
+      font-size: 0.9rem;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .file-input-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1 1 auto;
+      min-width: 240px;
+    }
+
+    input[type="file"] {
+      flex: 1;
+      padding: 6px;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #e5e7eb;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-weight: 500;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #ecfdf5;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    a#downloadLink {
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 8px 16px;
+      border: 1px solid #4b5563;
+      color: #e5e7eb;
+      font-size: 0.9rem;
+      display: none;
+      white-space: nowrap;
+    }
+
+    .status {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-bottom: 8px;
+      min-height: 1.2em;
+    }
+
+    textarea {
+      width: 100%;
+      height: 380px;
+      resize: vertical;
+      padding: 12px;
+      border-radius: 0.75rem;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: #e5e7eb;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      white-space: pre;
+    }
+
+    .hint {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: #6b7280;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .badge {
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+      font-size: 0.75rem;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        border-radius: 0;
+        min-height: 100vh;
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
-        <div class="title">Dành Cho Em ♡</div>
-    </div>
-    
-    <!-- Điều khiển -->
+  <div class="container">
+    <h1>
+      <span class="logo">AI</span>
+      Source Flattener
+    </h1>
+    <p class="sub">
+      Upload <code>.zip</code> source → tool sẽ merge toàn bộ file text (trừ CSS & binary) vào 1 file thân thiện cho AI (có path + code block).
+    </p>
+
     <div class="controls">
-        <button class="music-toggle" id="musicBtn">🎵</button>
-        <div class="music-controls" id="musicControls" style="display: none;">
-            <button class="control-btn" id="prevBtn">⏮️</button>
-            <button class="control-btn" id="nextBtn">⏭️</button>
-        </div>
+      <div class="file-input-group">
+        <input type="file" id="zipInput" accept=".zip" />
+      </div>
+
+      <button id="processBtn">
+        <span>Generate AI view</span>
+      </button>
+
+      <a id="downloadLink" href="#" download>Download merged file</a>
     </div>
-    
-    <!-- Container -->
-    <div class="container">
-        <!-- Khung ảnh -->
-        <div class="photo-section">
-            <div class="photo-frame">
-                <div class="photo-label">💖 Ảnh Của Chúng Mình 💖</div>
-                
-                <!-- Slideshow -->
-                <div class="slideshow-container" id="slideshowContainer">
-                    <!-- Slides sẽ được thêm bằng JavaScript -->
-                </div>
-                
-                <!-- Chấm chỉ số -->
-                <div class="slide-dots" id="slideDots"></div>
-            </div>
-        </div>
-        
-        <!-- Lá thư mới -->
-        <div class="letter-section">
-            <div class="letter-card" id="letterCard">
-                <div class="letter-decorations">✨💕✨</div>
-                
-                <div class="letter-header">
-                    <div class="letter-title">Thư Gửi Em</div>
-                    <div class="letter-subtitle">Click để đọc thư ♡</div>
-                </div>
-                
-                <div class="letter-content" id="letterContent" style="display: none;">
-                    <p>Gửi em yêu của anh,</p>
-                    
-                    <p>Chúc em 20/10 thật vui vẻ và hạnh phúc. Em là điều tuyệt vời nhất đã đến với anh...</p>
-                    
-                    <p>Yêu em nhiều! ❤️</p>
-                </div>
-                
-                <div class="letter-footer" id="letterFooter" style="display: none;">
-                    <div class="letter-signature">Thanh Lực ♡</div>
-                </div>
-            </div>
-        </div>
+
+    <div class="status" id="status"></div>
+
+    <textarea id="output" placeholder="Kết quả sẽ xuất hiện ở đây sau khi xử lý .zip..."></textarea>
+
+    <div class="hint">
+      <span class="badge">Client-side only (zip không rời khỏi trình duyệt)</span>
+      <span>Format: <code>===== FILE: path =====</code> + code block cho từng file.</span>
     </div>
-    
-    <!-- Modal phóng to ảnh -->
-    <div class="image-modal" id="imageModal">
-        <img id="enlargedImage" src="" alt="Phóng to">
-    </div>
-    
-    <audio id="bgMusic" loop></audio>
+  </div>
 
-    <script>
-        // Danh sách file
-        const musicFiles = ['K.mp3'];
-        
-        const imageFiles = [
-            '6316538446259883228.jpg',
-            '6316538446259883229.jpg',
-            '6316538446259883230.jpg',
-            '6316538446259883231.jpg',
-            '6316538446259883232.jpg',
-            '6316538446259883233.jpg',
-            '6316538446259883234.jpg',
-            '6316538446259883235.jpg',
-            '6316538446259883236.jpg',
-            '6316538446259883237.jpg'
-        ];
-        
-        // Biến
-        let currentMusicIndex = 0;
-        let isPlaying = false;
-        
-        // Lấy elements
-        const letterCard = document.getElementById('letterCard');
-        const letterContent = document.getElementById('letterContent');
-        const letterFooter = document.getElementById('letterFooter');
-        const musicBtn = document.getElementById('musicBtn');
-        const bgMusic = document.getElementById('bgMusic');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const musicControls = document.getElementById('musicControls');
-        const imageModal = document.getElementById('imageModal');
-        const enlargedImage = document.getElementById('enlargedImage');
-        
-        // Load nhạc
-        function loadMusic(index) {
-            if (musicFiles.length > 0) {
-                bgMusic.src = musicFiles[index];
-                currentMusicIndex = index;
-            }
-        }
-        
-        // Phát nhạc
-        function playMusic() {
-            const playPromise = bgMusic.play();
-            musicBtn.innerHTML = '🎶';
-            musicBtn.classList.add('playing');
-            isPlaying = true;
-            if (musicFiles.length > 1) {
-                musicControls.style.display = 'flex';
-            }
-            return playPromise;
-        }
-        
-        // Dừng nhạc
-        function pauseMusic() {
-            bgMusic.pause();
-            musicBtn.innerHTML = '🎵';
-            musicBtn.classList.remove('playing');
-            isPlaying = false;
-        }
-        
-        // Phóng to ảnh
-        function enlargeImage(imageSrc) {
-            enlargedImage.src = imageSrc;
-            imageModal.classList.add('show');
-        }
-        
-        // Tạo confetti
-        function createConfetti() {
-            const colors = ['#ff6b9d', '#ffd700', '#00ff00', '#00bfff', '#ff69b4', '#ffa500'];
-            for (let i = 0; i < 30; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = '50%';
-                    confetti.style.top = '50%';
-                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    
-                    const angle = Math.random() * Math.PI * 2;
-                    const velocity = Math.random() * 150 + 100;
-                    const vx = Math.cos(angle) * velocity;
-                    const vy = Math.sin(angle) * velocity;
-                    
-                    document.body.appendChild(confetti);
-                    
-                    confetti.animate([
-                        { transform: `translate(0, 0) rotate(0deg)`, opacity: 1 },
-                        { transform: `translate(${vx}px, ${vy}px) rotate(720deg)`, opacity: 0 }
-                    ], { duration: 2000, easing: 'cubic-bezier(0, .9, .57, 1)' });
-                    
-                    setTimeout(() => confetti.remove(), 2000);
-                }, i * 30);
-            }
-        }
+  <script>
+    const ignorePatterns = [
+      /^node_modules\//i,
+      /^vendor\//i,
+      /^dist\//i,
+      /^build\//i,
+      /^out\//i,
+      /^\.git\//,
+      /^\.idea\//,
+      /^\.vscode\//,
+      /\/\.git\//,
+      /\/node_modules\//i,
+      /\/dist\//i,
+      /\/build\//i,
+      /^__MACOSX\//i,
+    ];
 
-        // Slideshow ảnh (tự động và điều khiển)
-        const slideshowContainer = document.getElementById('slideshowContainer');
-        const slideDots = document.getElementById('slideDots');
+    // Blacklist: toàn bộ binary + CSS-related
+    const binaryOrExcludedExt = [
+      // images
+      ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tiff", ".svg",
+      ".ico",
 
-        let currentSlide = 0;
-        let autoplayInterval = 4000; // 4s
-        let autoplayTimer = null;
+      // fonts
+      ".ttf", ".otf", ".woff", ".woff2", ".eot",
 
-        function initSlideshow() {
-            if (!slideshowContainer || !slideDots) return;
+      // archives
+      ".zip", ".tar", ".gz", ".tgz", ".bz2", ".7z", ".rar",
 
-            // Clear any existing
-            slideshowContainer.querySelectorAll('.slide').forEach(s => s.remove());
-            slideDots.innerHTML = '';
+      // audio
+      ".mp3", ".wav", ".ogg", ".flac", ".m4a",
 
-            if (!imageFiles || imageFiles.length === 0) {
-                slideshowContainer.style.display = 'none';
-                return;
-            }
+      // video
+      ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".webm",
 
-            // Create slides and dots
-            imageFiles.forEach((file, idx) => {
-                const slide = document.createElement('div');
-                slide.className = 'slide';
-                
-                // Thêm số thứ tự
-                const counter = document.createElement('div');
-                counter.className = 'slide-counter';
-                counter.textContent = `${idx + 1} / ${imageFiles.length}`;
-                counter.style.cssText = `
-                    position: absolute;
-                    top: 15px;
-                    right: 15px;
-                    background: rgba(255, 107, 157, 0.9);
-                    color: white;
-                    padding: 6px 14px;
-                    border-radius: 20px;
-                    font-size: 13px;
-                    font-weight: 600;
-                    z-index: 2;
-                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-                    backdrop-filter: blur(5px);
-                    font-family: 'Quicksand', sans-serif;
-                `;
-                
-                const img = document.createElement('img');
-                img.src = file;
-                img.alt = `Ảnh ${idx + 1}`;
-                img.onclick = () => enlargeImage(file);
-                
-                slide.appendChild(counter);
-                slide.appendChild(img);
-                slideshowContainer.insertBefore(slide, slideshowContainer.querySelector('.slide-controls'));
+      // executables / libs
+      ".exe", ".dll", ".so", ".dylib", ".bin", ".obj", ".o",
 
-                // dot
-                const dot = document.createElement('span');
-                dot.className = 'dot';
-                dot.dataset.index = idx;
-                dot.addEventListener('click', () => {
-                    showSlide(idx);
-                    restartAutoplay();
-                });
-                slideDots.appendChild(dot);
+      // databases / others
+      ".db", ".sqlite", ".sqlite3", ".mdb",
 
-                // preload
-                const pre = new Image(); pre.src = file;
-            });
+      // design / docs
+      ".psd", ".ai", ".sketch", ".fig", ".ppt", ".pptx", ".doc", ".docx",
 
-            // Show first
-            showSlide(0);
+      // PDF
+      ".pdf",
 
-            // Pause on user interaction (touch/mouse)
-            slideshowContainer.addEventListener('mouseenter', stopAutoplay);
-            slideshowContainer.addEventListener('mouseleave', startAutoplay);
-            slideshowContainer.addEventListener('touchstart', stopAutoplay, { passive: true });
-            slideshowContainer.addEventListener('touchend', restartAutoplay, { passive: true });
+      // CSS (bị yêu cầu bỏ qua)
+      ".css", ".scss", ".sass", ".less"
+    ];
 
-            // Start autoplay if more than 1 image
-            if (imageFiles.length > 1) startAutoplay();
-        }
+    const MAX_FILE_CHARS = 200000; // cắt bớt file quá to để AI dễ xử lý
 
-        function showSlide(index) {
-            const slides = slideshowContainer.querySelectorAll('.slide');
-            const dots = slideDots.querySelectorAll('.dot');
-            if (slides.length === 0) return;
-            currentSlide = (index + slides.length) % slides.length;
+    const zipInput = document.getElementById("zipInput");
+    const processBtn = document.getElementById("processBtn");
+    const downloadLink = document.getElementById("downloadLink");
+    const output = document.getElementById("output");
+    const status = document.getElementById("status");
 
-            slides.forEach((s, i) => {
-                s.classList.toggle('active', i === currentSlide);
-            });
-            dots.forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+    function shouldIgnore(name) {
+      return ignorePatterns.some(re => re.test(name));
+    }
+
+    function isBinaryOrExcluded(name) {
+      const lower = name.toLowerCase();
+      return binaryOrExcludedExt.some(ext => lower.endsWith(ext));
+    }
+
+    function detectFenceLang(name) {
+      const lower = name.toLowerCase();
+      const parts = lower.split(".");
+      if (parts.length < 2) return "";
+
+      const ext = parts[parts.length - 1];
+
+      const map = {
+        js: "js",
+        jsx: "jsx",
+        ts: "ts",
+        tsx: "tsx",
+        py: "python",
+        rb: "ruby",
+        php: "php",
+        java: "java",
+        kt: "kotlin",
+        go: "go",
+        rs: "rust",
+        c: "c",
+        h: "c",
+        cpp: "cpp",
+        hpp: "cpp",
+        cs: "csharp",
+        html: "html",
+        htm: "html",
+        md: "md",
+        json: "json",
+        yml: "yaml",
+        yaml: "yaml",
+        toml: "toml",
+        sh: "bash",
+        bash: "bash",
+        dockerfile: "dockerfile"
+      };
+
+      return map[ext] || "";
+    }
+
+    function escapeBackticks(str) {
+      // nếu trong content có ``` thì escape nhẹ để không phá code fence bên ngoài
+      return str.replace(/```/g, "`\\`\\`");
+    }
+
+    function setStatus(msg) {
+      status.textContent = msg || "";
+    }
+
+    processBtn.addEventListener("click", async () => {
+      const file = zipInput.files[0];
+      if (!file) {
+        alert("Chọn 1 file .zip trước đã.");
+        return;
+      }
+
+      processBtn.disabled = true;
+      downloadLink.style.display = "none";
+      output.value = "";
+      setStatus("Đang đọc zip & merge file...");
+
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const zip = await JSZip.loadAsync(arrayBuffer);
+
+        const entries = Object.values(zip.files).sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+
+        const parts = [];
+        let includedCount = 0;
+        let skippedCount = 0;
+
+        for (const entry of entries) {
+          if (entry.dir) {
+            continue;
+          }
+
+          const name = entry.name.replace(/\\/g, "/");
+
+          // ignore theo path + extension blacklist
+          if (shouldIgnore(name) || isBinaryOrExcluded(name)) {
+            skippedCount++;
+            continue;
+          }
+
+          let content;
+          try {
+            content = await entry.async("string");
+          } catch (e) {
+            // nếu decode string fail (file binary trá hình) thì skip
+            skippedCount++;
+            continue;
+          }
+
+          if (content.length > MAX_FILE_CHARS) {
+            content = content.slice(0, MAX_FILE_CHARS) +
+              "\n\n// [TRUNCATED] file quá lớn, đã cắt bớt để phù hợp cho AI.\n";
+          }
+
+          const fenceLang = detectFenceLang(name);
+          const escaped = escapeBackticks(content);
+
+          const block =
+`===== FILE: ${name} =====
+
+\`\`\`${fenceLang}
+${escaped}
+\`\`\`
+
+`;
+
+          parts.push(block);
+          includedCount++;
         }
 
-        function nextSlide() { showSlide(currentSlide + 1); }
+        const result = parts.join("\n");
+        output.value = result || "// Không có file text hợp lệ nào được include sau khi áp dụng ignore/blacklist.";
 
-        function startAutoplay() {
-            if (autoplayTimer) return;
-            if (!imageFiles || imageFiles.length <= 1) return;
-            autoplayTimer = setInterval(() => nextSlide(), autoplayInterval);
-        }
+        const blob = new Blob([result], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
 
-        function stopAutoplay() {
-            if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
-        }
+        downloadLink.href = url;
+        downloadLink.download =
+          (file.name || "source").replace(/\.zip$/i, "") + "-ai-view.txt";
+        downloadLink.style.display = "inline-block";
 
-        function restartAutoplay() { stopAutoplay(); startAutoplay(); }
-        
-        // Events
-        window.addEventListener('load', () => {
-            loadMusic(0);
-            initSlideshow();
-        });
-        
-        musicBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            isPlaying ? pauseMusic() : playMusic();
-        });
-        
-        prevBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            currentMusicIndex = (currentMusicIndex - 1 + musicFiles.length) % musicFiles.length;
-            loadMusic(currentMusicIndex);
-            if (isPlaying) bgMusic.play();
-        });
-        
-        nextBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            currentMusicIndex = (currentMusicIndex + 1) % musicFiles.length;
-            loadMusic(currentMusicIndex);
-            if (isPlaying) bgMusic.play();
-        });
-        
-        bgMusic.addEventListener('ended', () => {
-            if (musicFiles.length > 1) {
-                currentMusicIndex = (currentMusicIndex + 1) % musicFiles.length;
-                loadMusic(currentMusicIndex);
-                if (isPlaying) bgMusic.play();
-            }
-        });
-        
-        imageModal.addEventListener('click', () => {
-            imageModal.classList.remove('show');
-        });
-        
-        // Xử lý lá thư mới
-        let letterOpened = false;
-        letterCard.addEventListener('click', () => {
-            if (!letterOpened) {
-                letterContent.style.display = 'block';
-                letterFooter.style.display = 'block';
-                letterCard.classList.add('opened');
-                createConfetti();
-                letterOpened = true;
-                
-                // Tự động bật nhạc khi mở thư
-                if (!isPlaying) {
-                    playMusic().catch(() => {
-                        // Im lặng nếu lỗi
-                    });
-                }
-            }
-        });
-    </script>
+        setStatus(`Done: ${includedCount} file text, skipped ${skippedCount} file (binary / CSS / thư mục rác).`);
+      } catch (err) {
+        console.error(err);
+        alert("Có lỗi khi xử lý zip. Check console để debug.");
+        setStatus("Lỗi khi xử lý zip.");
+      } finally {
+        processBtn.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>
