@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI-Friendly Source Flattener</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- JSZip CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #020617;
+      border-radius: 1.5rem;
+      padding: 24px;
+      max-width: 960px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.75);
+      border: 1px solid #1f2937;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h1 span.logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #22d3ee, #4f46e5);
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    p.sub {
+      margin-top: 4px;
+      margin-bottom: 16px;
+      color: #9ca3af;
+      font-size: 0.9rem;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .file-input-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1 1 auto;
+      min-width: 240px;
+    }
+
+    input[type="file"] {
+      flex: 1;
+      padding: 6px;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #e5e7eb;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-weight: 500;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #ecfdf5;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    a#downloadLink {
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 8px 16px;
+      border: 1px solid #4b5563;
+      color: #e5e7eb;
+      font-size: 0.9rem;
+      display: none;
+      white-space: nowrap;
+    }
+
+    .status {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-bottom: 8px;
+      min-height: 1.2em;
+    }
+
+    textarea {
+      width: 100%;
+      height: 380px;
+      resize: vertical;
+      padding: 12px;
+      border-radius: 0.75rem;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: #e5e7eb;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      white-space: pre;
+    }
+
+    .hint {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: #6b7280;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .badge {
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+      font-size: 0.75rem;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        border-radius: 0;
+        min-height: 100vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>
+      <span class="logo">AI</span>
+      Source Flattener
+    </h1>
+    <p class="sub">
+      Upload <code>.zip</code> source → tool sẽ merge toàn bộ file text (trừ CSS & binary) vào 1 file thân thiện cho AI (có path + code block).
+    </p>
+
+    <div class="controls">
+      <div class="file-input-group">
+        <input type="file" id="zipInput" accept=".zip" />
+      </div>
+
+      <button id="processBtn">
+        <span>Generate AI view</span>
+      </button>
+
+      <a id="downloadLink" href="#" download>Download merged file</a>
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <textarea id="output" placeholder="Kết quả sẽ xuất hiện ở đây sau khi xử lý .zip..."></textarea>
+
+    <div class="hint">
+      <span class="badge">Client-side only (zip không rời khỏi trình duyệt)</span>
+      <span>Format: <code>===== FILE: path =====</code> + code block cho từng file.</span>
+    </div>
+  </div>
+
+  <script>
+    const ignorePatterns = [
+      /^node_modules\//i,
+      /^vendor\//i,
+      /^dist\//i,
+      /^build\//i,
+      /^out\//i,
+      /^\.git\//,
+      /^\.idea\//,
+      /^\.vscode\//,
+      /\/\.git\//,
+      /\/node_modules\//i,
+      /\/dist\//i,
+      /\/build\//i,
+      /^__MACOSX\//i,
+    ];
+
+    // Blacklist: toàn bộ binary + CSS-related
+    const binaryOrExcludedExt = [
+      // images
+      ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tiff", ".svg",
+      ".ico",
+
+      // fonts
+      ".ttf", ".otf", ".woff", ".woff2", ".eot",
+
+      // archives
+      ".zip", ".tar", ".gz", ".tgz", ".bz2", ".7z", ".rar",
+
+      // audio
+      ".mp3", ".wav", ".ogg", ".flac", ".m4a",
+
+      // video
+      ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".webm",
+
+      // executables / libs
+      ".exe", ".dll", ".so", ".dylib", ".bin", ".obj", ".o",
+
+      // databases / others
+      ".db", ".sqlite", ".sqlite3", ".mdb",
+
+      // design / docs
+      ".psd", ".ai", ".sketch", ".fig", ".ppt", ".pptx", ".doc", ".docx",
+
+      // PDF
+      ".pdf",
+
+      // CSS (bị yêu cầu bỏ qua)
+      ".css", ".scss", ".sass", ".less",
+
+      // javascript
+      "html","js"
+    ];
+
+    const MAX_FILE_CHARS = 200000; // cắt bớt file quá to để AI dễ xử lý
+
+    const zipInput = document.getElementById("zipInput");
+    const processBtn = document.getElementById("processBtn");
+    const downloadLink = document.getElementById("downloadLink");
+    const output = document.getElementById("output");
+    const status = document.getElementById("status");
+
+    function shouldIgnore(name) {
+      return ignorePatterns.some(re => re.test(name));
+    }
+
+    function isBinaryOrExcluded(name) {
+      const lower = name.toLowerCase();
+      return binaryOrExcludedExt.some(ext => lower.endsWith(ext));
+    }
+
+    function detectFenceLang(name) {
+      const lower = name.toLowerCase();
+      const parts = lower.split(".");
+      if (parts.length < 2) return "";
+
+      const ext = parts[parts.length - 1];
+
+      const map = {
+        js: "js",
+        jsx: "jsx",
+        ts: "ts",
+        tsx: "tsx",
+        py: "python",
+        rb: "ruby",
+        php: "php",
+        java: "java",
+        kt: "kotlin",
+        go: "go",
+        rs: "rust",
+        c: "c",
+        h: "c",
+        cpp: "cpp",
+        hpp: "cpp",
+        cs: "csharp",
+        html: "html",
+        htm: "html",
+        md: "md",
+        json: "json",
+        yml: "yaml",
+        yaml: "yaml",
+        toml: "toml",
+        sh: "bash",
+        bash: "bash",
+        dockerfile: "dockerfile"
+      };
+
+      return map[ext] || "";
+    }
+
+    function escapeBackticks(str) {
+      // nếu trong content có ``` thì escape nhẹ để không phá code fence bên ngoài
+      return str.replace(/```/g, "`\\`\\`");
+    }
+
+    function setStatus(msg) {
+      status.textContent = msg || "";
+    }
+
+    processBtn.addEventListener("click", async () => {
+      const file = zipInput.files[0];
+      if (!file) {
+        alert("Chọn 1 file .zip trước đã.");
+        return;
+      }
+
+      processBtn.disabled = true;
+      downloadLink.style.display = "none";
+      output.value = "";
+      setStatus("Đang đọc zip & merge file...");
+
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const zip = await JSZip.loadAsync(arrayBuffer);
+
+        const entries = Object.values(zip.files).sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+
+        const parts = [];
+        let includedCount = 0;
+        let skippedCount = 0;
+
+        for (const entry of entries) {
+          if (entry.dir) {
+            continue;
+          }
+
+          const name = entry.name.replace(/\\/g, "/");
+
+          // ignore theo path + extension blacklist
+          if (shouldIgnore(name) || isBinaryOrExcluded(name)) {
+            skippedCount++;
+            continue;
+          }
+
+          let content;
+          try {
+            content = await entry.async("string");
+          } catch (e) {
+            // nếu decode string fail (file binary trá hình) thì skip
+            skippedCount++;
+            continue;
+          }
+
+          if (content.length > MAX_FILE_CHARS) {
+            content = content.slice(0, MAX_FILE_CHARS) +
+              "\n\n// [TRUNCATED] file quá lớn, đã cắt bớt để phù hợp cho AI.\n";
+          }
+
+          const fenceLang = detectFenceLang(name);
+          const escaped = escapeBackticks(content);
+
+          const block =
+`===== FILE: ${name} =====
+
+\`\`\`${fenceLang}
+${escaped}
+\`\`\`
+
+`;
+
+          parts.push(block);
+          includedCount++;
+        }
+
+        const result = parts.join("\n");
+        output.value = result || "// Không có file text hợp lệ nào được include sau khi áp dụng ignore/blacklist.";
+
+        const blob = new Blob([result], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+
+        downloadLink.href = url;
+        downloadLink.download =
+          (file.name || "source").replace(/\.zip$/i, "") + "-ai-view.txt";
+        downloadLink.style.display = "inline-block";
+
+        setStatus(`Done: ${includedCount} file text, skipped ${skippedCount} file (binary / CSS / thư mục rác).`);
+      } catch (err) {
+        console.error(err);
+        alert("Có lỗi khi xử lý zip. Check console để debug.");
+        setStatus("Lỗi khi xử lý zip.");
+      } finally {
+        processBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
