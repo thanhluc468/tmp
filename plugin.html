@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI-Friendly Source Flattener</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+<style>
+*{
+box-sizing:border-box;
+font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+body{
+margin:0;
+padding:0;
+background:#0f172a;
+color:#e5e7eb;
+display:flex;
+align-items:center;
+justify-content:center;
+min-height:100vh;
+}
+
+.container{
+background:#020617;
+border-radius:1.5rem;
+padding:24px;
+max-width:960px;
+width:100%;
+box-shadow:0 25px 50px -12px rgba(0,0,0,0.75);
+border:1px solid #1f2937;
+}
+
+h1{
+margin-top:0;
+font-size:1.5rem;
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.logo{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+width:32px;
+height:32px;
+border-radius:999px;
+background:radial-gradient(circle at 30% 30%,#22d3ee,#4f46e5);
+font-weight:700;
+}
+
+.sub{
+margin-top:4px;
+margin-bottom:16px;
+color:#9ca3af;
+font-size:0.9rem;
+}
+
+.controls{
+display:flex;
+flex-wrap:wrap;
+gap:12px;
+align-items:center;
+margin-bottom:12px;
+}
+
+.file-input-group{
+display:flex;
+align-items:center;
+gap:8px;
+flex:1 1 auto;
+min-width:240px;
+}
+
+input[type="file"]{
+flex:1;
+padding:6px;
+border-radius:999px;
+border:1px solid #374151;
+background:#020617;
+color:#e5e7eb;
+}
+
+button{
+border:none;
+border-radius:999px;
+padding:8px 16px;
+cursor:pointer;
+font-weight:500;
+background:linear-gradient(135deg,#22c55e,#16a34a);
+color:#ecfdf5;
+}
+
+button:disabled{
+opacity:.6;
+cursor:default;
+}
+
+#downloadLink{
+text-decoration:none;
+border-radius:999px;
+padding:8px 16px;
+border:1px solid #4b5563;
+color:#e5e7eb;
+font-size:0.9rem;
+display:none;
+}
+
+.status{
+font-size:.8rem;
+color:#9ca3af;
+margin-bottom:8px;
+min-height:1.2em;
+}
+
+textarea{
+width:100%;
+height:380px;
+resize:vertical;
+padding:12px;
+border-radius:.75rem;
+border:1px solid #1f2937;
+background:#020617;
+color:#e5e7eb;
+font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+font-size:.8rem;
+line-height:1.4;
+white-space:pre;
+}
+
+.hint{
+margin-top:8px;
+font-size:.8rem;
+color:#6b7280;
+display:flex;
+justify-content:space-between;
+flex-wrap:wrap;
+gap:6px;
+}
+
+.badge{
+padding:2px 8px;
+border-radius:999px;
+border:1px solid #4b5563;
+font-size:.75rem;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>
+<span class="logo">AI</span>
+Source Flattener
+</h1>
+
+<p class="sub">
+Upload <code>.zip</code> source → tool sẽ merge toàn bộ file text vào 1 file thân thiện cho AI.
+</p>
+
+<div class="controls">
+
+<div class="file-input-group">
+<input type="file" id="zipInput" accept=".zip">
+</div>
+
+<button id="processBtn">
+Generate AI view
+</button>
+
+<a id="downloadLink">Download merged file</a>
+
+</div>
+
+<div class="status" id="status"></div>
+
+<textarea id="output" placeholder="Kết quả sẽ xuất hiện ở đây..."></textarea>
+
+<div class="hint">
+<span class="badge">Client-side only</span>
+<span>Format: ===== FILE: path =====</span>
+</div>
+
+</div>
+
+<script>
+
+const MAX_FILE_CHARS = 200000;
+
+const blacklistedExtensions = [
+
+".png",".jpg",".jpeg",".gif",".webp",".bmp",".tiff",".ico",".avif",
+
+".ttf",".otf",".woff",".woff2",".eot",
+
+".mp3",".wav",".ogg",".flac",".m4a",
+".mp4",".mkv",".avi",".mov",".wmv",".webm",
+
+".zip",".tar",".gz",".tgz",".bz2",".7z",".rar",".phar",
+
+".exe",".dll",".so",".dylib",".bin",".obj",".o",".class",
+
+".db",".sqlite",".sqlite3",".mdb",
+
+".pdf",".doc",".docx",".ppt",".pptx",".xls",".xlsx",
+
+".mo",
+
+".log"
+
+];
+
+const zipInput=document.getElementById("zipInput");
+const processBtn=document.getElementById("processBtn");
+const downloadLink=document.getElementById("downloadLink");
+const output=document.getElementById("output");
+const status=document.getElementById("status");
+
+function isBlacklistedExtension(name){
+const lower=name.toLowerCase();
+return blacklistedExtensions.some(ext=>lower.endsWith(ext));
+}
+
+function detectFenceLang(name){
+
+const base=name.toLowerCase().split("/").pop()||"";
+const parts=base.split(".");
+
+if(base==="dockerfile") return "dockerfile";
+if(parts.length<2) return "";
+
+const ext=parts[parts.length-1];
+
+const map={
+php:"php",
+js:"js",
+jsx:"jsx",
+ts:"ts",
+tsx:"tsx",
+html:"html",
+css:"css",
+scss:"scss",
+less:"less",
+json:"json",
+md:"md",
+txt:"txt",
+yml:"yaml",
+yaml:"yaml",
+xml:"xml",
+sql:"sql",
+sh:"bash"
+};
+
+return map[ext]||"";
+}
+
+function escapeBackticks(str){
+return str.replace(/```/g,"`\\`\\`");
+}
+
+function setStatus(msg){
+status.textContent=msg||"";
+}
+
+processBtn.addEventListener("click",async()=>{
+
+const file=zipInput.files[0];
+
+if(!file){
+alert("Chọn file zip trước");
+return;
+}
+
+processBtn.disabled=true;
+downloadLink.style.display="none";
+output.value="";
+setStatus("Processing zip...");
+
+try{
+
+const arrayBuffer=await file.arrayBuffer();
+const zip=await JSZip.loadAsync(arrayBuffer);
+
+const entries=Object.values(zip.files).sort((a,b)=>a.name.localeCompare(b.name));
+
+const parts=[];
+let included=0;
+let skipped=0;
+
+for(const entry of entries){
+
+if(entry.dir) continue;
+
+const name=entry.name.replace(/\\/g,"/");
+
+if(isBlacklistedExtension(name)){
+skipped++;
+continue;
+}
+
+let content;
+
+try{
+content=await entry.async("string");
+}catch{
+skipped++;
+continue;
+}
+
+if(content.length>MAX_FILE_CHARS){
+content=content.slice(0,MAX_FILE_CHARS)+"\n\n// [TRUNCATED]\n";
+}
+
+const lang=detectFenceLang(name);
+const escaped=escapeBackticks(content);
+
+parts.push(
+`===== FILE: ${name} =====
+
+\`\`\`${lang}
+${escaped}
+\`\`\`
+
+`
+);
+
+included++;
+
+}
+
+const result=parts.join("\n");
+
+output.value=result||"// No readable files.";
+
+const blob=new Blob([result],{type:"text/plain"});
+const url=URL.createObjectURL(blob);
+
+downloadLink.href=url;
+downloadLink.download=file.name.replace(/\.zip$/i,"")+"-ai-view.txt";
+downloadLink.style.display="inline-block";
+
+setStatus(`Done: ${included} files, skipped ${skipped}`);
+
+}catch(err){
+
+console.error(err);
+alert("Zip processing error");
+setStatus("Error");
+
+}finally{
+
+processBtn.disabled=false;
+
+}
+
+});
+
+</script>
+
+</body>
+</html>
