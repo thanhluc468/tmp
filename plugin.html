@@ -9,144 +9,144 @@
 
 <style>
 *{
-box-sizing:border-box;
-font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  box-sizing:border-box;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 
 body{
-margin:0;
-padding:0;
-background:#0f172a;
-color:#e5e7eb;
-display:flex;
-align-items:center;
-justify-content:center;
-min-height:100vh;
+  margin:0;
+  padding:0;
+  background:#0f172a;
+  color:#e5e7eb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
 }
 
 .container{
-background:#020617;
-border-radius:1.5rem;
-padding:24px;
-max-width:960px;
-width:100%;
-box-shadow:0 25px 50px -12px rgba(0,0,0,0.75);
-border:1px solid #1f2937;
+  background:#020617;
+  border-radius:1.5rem;
+  padding:24px;
+  max-width:960px;
+  width:100%;
+  box-shadow:0 25px 50px -12px rgba(0,0,0,0.75);
+  border:1px solid #1f2937;
 }
 
 h1{
-margin-top:0;
-font-size:1.5rem;
-display:flex;
-align-items:center;
-gap:8px;
+  margin-top:0;
+  font-size:1.5rem;
+  display:flex;
+  align-items:center;
+  gap:8px;
 }
 
 .logo{
-display:inline-flex;
-align-items:center;
-justify-content:center;
-width:32px;
-height:32px;
-border-radius:999px;
-background:radial-gradient(circle at 30% 30%,#22d3ee,#4f46e5);
-font-weight:700;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:32px;
+  height:32px;
+  border-radius:999px;
+  background:radial-gradient(circle at 30% 30%,#22d3ee,#4f46e5);
+  font-weight:700;
 }
 
 .sub{
-margin-top:4px;
-margin-bottom:16px;
-color:#9ca3af;
-font-size:0.9rem;
+  margin-top:4px;
+  margin-bottom:16px;
+  color:#9ca3af;
+  font-size:0.9rem;
 }
 
 .controls{
-display:flex;
-flex-wrap:wrap;
-gap:12px;
-align-items:center;
-margin-bottom:12px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  align-items:center;
+  margin-bottom:12px;
 }
 
 .file-input-group{
-display:flex;
-align-items:center;
-gap:8px;
-flex:1 1 auto;
-min-width:240px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex:1 1 auto;
+  min-width:240px;
 }
 
 input[type="file"]{
-flex:1;
-padding:6px;
-border-radius:999px;
-border:1px solid #374151;
-background:#020617;
-color:#e5e7eb;
+  flex:1;
+  padding:6px;
+  border-radius:999px;
+  border:1px solid #374151;
+  background:#020617;
+  color:#e5e7eb;
 }
 
 button{
-border:none;
-border-radius:999px;
-padding:8px 16px;
-cursor:pointer;
-font-weight:500;
-background:linear-gradient(135deg,#22c55e,#16a34a);
-color:#ecfdf5;
+  border:none;
+  border-radius:999px;
+  padding:8px 16px;
+  cursor:pointer;
+  font-weight:500;
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  color:#ecfdf5;
 }
 
 button:disabled{
-opacity:.6;
-cursor:default;
+  opacity:.6;
+  cursor:default;
 }
 
 #downloadLink{
-text-decoration:none;
-border-radius:999px;
-padding:8px 16px;
-border:1px solid #4b5563;
-color:#e5e7eb;
-font-size:0.9rem;
-display:none;
+  text-decoration:none;
+  border-radius:999px;
+  padding:8px 16px;
+  border:1px solid #4b5563;
+  color:#e5e7eb;
+  font-size:0.9rem;
+  display:none;
 }
 
 .status{
-font-size:.8rem;
-color:#9ca3af;
-margin-bottom:8px;
-min-height:1.2em;
+  font-size:.8rem;
+  color:#9ca3af;
+  margin-bottom:8px;
+  min-height:1.2em;
 }
 
 textarea{
-width:100%;
-height:380px;
-resize:vertical;
-padding:12px;
-border-radius:.75rem;
-border:1px solid #1f2937;
-background:#020617;
-color:#e5e7eb;
-font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
-font-size:.8rem;
-line-height:1.4;
-white-space:pre;
+  width:100%;
+  height:380px;
+  resize:vertical;
+  padding:12px;
+  border-radius:.75rem;
+  border:1px solid #1f2937;
+  background:#020617;
+  color:#e5e7eb;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+  font-size:.8rem;
+  line-height:1.4;
+  white-space:pre;
 }
 
 .hint{
-margin-top:8px;
-font-size:.8rem;
-color:#6b7280;
-display:flex;
-justify-content:space-between;
-flex-wrap:wrap;
-gap:6px;
+  margin-top:8px;
+  font-size:.8rem;
+  color:#6b7280;
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:6px;
 }
 
 .badge{
-padding:2px 8px;
-border-radius:999px;
-border:1px solid #4b5563;
-font-size:.75rem;
+  padding:2px 8px;
+  border-radius:999px;
+  border:1px solid #4b5563;
+  font-size:.75rem;
 }
 </style>
 </head>
@@ -154,211 +154,215 @@ font-size:.75rem;
 <body>
 
 <div class="container">
+  <h1>
+    <span class="logo">AI</span>
+    Source Flattener
+  </h1>
 
-<h1>
-<span class="logo">AI</span>
-Source Flattener
-</h1>
+  <p class="sub">
+    Upload <code>.zip</code> source → tool sẽ merge toàn bộ file text vào 1 file thân thiện cho AI.
+  </p>
 
-<p class="sub">
-Upload <code>.zip</code> source → tool sẽ merge toàn bộ file text vào 1 file thân thiện cho AI.
-</p>
+  <div class="controls">
+    <div class="file-input-group">
+      <input type="file" id="zipInput" accept=".zip">
+    </div>
 
-<div class="controls">
+    <button id="processBtn">Generate AI view</button>
+    <a id="downloadLink">Download merged file</a>
+  </div>
 
-<div class="file-input-group">
-<input type="file" id="zipInput" accept=".zip">
-</div>
+  <div class="status" id="status"></div>
 
-<button id="processBtn">
-Generate AI view
-</button>
+  <textarea id="output" placeholder="Kết quả sẽ xuất hiện ở đây..."></textarea>
 
-<a id="downloadLink">Download merged file</a>
-
-</div>
-
-<div class="status" id="status"></div>
-
-<textarea id="output" placeholder="Kết quả sẽ xuất hiện ở đây..."></textarea>
-
-<div class="hint">
-<span class="badge">Client-side only</span>
-<span>Format: ===== FILE: path =====</span>
-</div>
-
+  <div class="hint">
+    <span class="badge">Client-side only</span>
+    <span>Format: ===== FILE: path =====</span>
+  </div>
 </div>
 
 <script>
-
 const MAX_FILE_CHARS = 200000;
 
-const blacklistedExtensions = [
+const BLACKLISTED_EXTENSIONS = new Set([
+  ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tiff", ".ico", ".css",
+  ".svg", ".avif",
+  ".ttf", ".otf", ".woff", ".woff2", ".eot",
+  ".mp3", ".wav", ".ogg", ".flac", ".m4a",
+  ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".webm",
+  ".zip", ".tar", ".gz", ".tgz", ".bz2", ".7z", ".rar", ".phar", ".br",
+  ".exe", ".dll", ".so", ".dylib", ".bin", ".obj", ".o", ".class",
+  ".db", ".sqlite", ".sqlite3", ".mdb",
+  ".pdf", ".doc", ".docx", ".ppt", ".pptx", ".xls", ".xlsx",
+  ".mo", ".map"
+]);
 
-".png",".jpg",".jpeg",".gif",".webp",".bmp",".tiff",".ico",".css", ".svg", ".avif",
+const BLACKLISTED_FILENAMES = new Set([
+  ".ds_store", "thumbs.db", ".gitkeep"
+]);
 
-".ttf",".otf",".woff",".woff2",".eot",
-
-".mp3",".wav",".ogg",".flac",".m4a",
-".mp4",".mkv",".avi",".mov",".wmv",".webm",
-
-".zip",".tar",".gz",".tgz",".bz2",".7z",".rar",".phar",
-
-".exe",".dll",".so",".dylib",".bin",".obj",".o",".class",
-
-".db",".sqlite",".sqlite3",".mdb",
-
-".pdf",".doc",".docx",".ppt",".pptx",".xls",".xlsx",
-
-".mo"
-
-];
-
-const zipInput=document.getElementById("zipInput");
-const processBtn=document.getElementById("processBtn");
-const downloadLink=document.getElementById("downloadLink");
-const output=document.getElementById("output");
-const status=document.getElementById("status");
-
-function isBlacklistedExtension(name){
-const lower=name.toLowerCase();
-return blacklistedExtensions.some(ext=>lower.endsWith(ext));
-}
-
-function detectFenceLang(name){
-
-const base=name.toLowerCase().split("/").pop()||"";
-const parts=base.split(".");
-
-if(base==="dockerfile") return "dockerfile";
-if(parts.length<2) return "";
-
-const ext=parts[parts.length-1];
-
-const map={
-php:"php",
-js:"js",
-jsx:"jsx",
-ts:"ts",
-tsx:"tsx",
-html:"html",
-css:"css",
-scss:"scss",
-less:"less",
-json:"json",
-md:"md",
-txt:"txt",
-yml:"yaml",
-yaml:"yaml",
-xml:"xml",
-sql:"sql",
-sh:"bash"
+const LANG_MAP = {
+  php: "php",
+  js: "js",
+  jsx: "jsx",
+  ts: "ts",
+  tsx: "tsx",
+  html: "html",
+  css: "css",
+  scss: "scss",
+  less: "less",
+  json: "json",
+  md: "md",
+  txt: "txt",
+  yml: "yaml",
+  yaml: "yaml",
+  xml: "xml",
+  sql: "sql",
+  sh: "bash"
 };
 
-return map[ext]||"";
+const zipInput = document.getElementById("zipInput");
+const processBtn = document.getElementById("processBtn");
+const downloadLink = document.getElementById("downloadLink");
+const output = document.getElementById("output");
+const status = document.getElementById("status");
+
+function normalizePath(name) {
+  return String(name).replace(/\\/g, "/");
 }
 
-function escapeBackticks(str){
-return str.replace(/```/g,"`\\`\\`");
+function getBaseName(path) {
+  const normalized = normalizePath(path).toLowerCase();
+  const parts = normalized.split("/");
+  return parts[parts.length - 1] || "";
 }
 
-function setStatus(msg){
-status.textContent=msg||"";
+function getExtension(path) {
+  const base = getBaseName(path);
+  const dotIndex = base.lastIndexOf(".");
+  return dotIndex >= 0 ? base.slice(dotIndex) : "";
 }
 
-processBtn.addEventListener("click",async()=>{
-
-const file=zipInput.files[0];
-
-if(!file){
-alert("Chọn file zip trước");
-return;
+function isBlacklisted(name) {
+  const lower = normalizePath(name).toLowerCase();
+  const base = getBaseName(lower);
+  const ext = getExtension(lower);
+  return BLACKLISTED_EXTENSIONS.has(ext) || BLACKLISTED_FILENAMES.has(base);
 }
 
-processBtn.disabled=true;
-downloadLink.style.display="none";
-output.value="";
-setStatus("Processing zip...");
+function detectFenceLang(name) {
+  const base = getBaseName(name);
 
-try{
+  if (base === "dockerfile") {
+    return "dockerfile";
+  }
 
-const arrayBuffer=await file.arrayBuffer();
-const zip=await JSZip.loadAsync(arrayBuffer);
+  const parts = base.split(".");
+  if (parts.length < 2) {
+    return "";
+  }
 
-const entries=Object.values(zip.files).sort((a,b)=>a.name.localeCompare(b.name));
-
-const parts=[];
-let included=0;
-let skipped=0;
-
-for(const entry of entries){
-
-if(entry.dir) continue;
-
-const name=entry.name.replace(/\\/g,"/");
-
-if(isBlacklistedExtension(name)){
-skipped++;
-continue;
+  const ext = parts[parts.length - 1];
+  return LANG_MAP[ext] || "";
 }
 
-let content;
-
-try{
-content=await entry.async("string");
-}catch{
-skipped++;
-continue;
+function escapeBackticks(str) {
+  return str.replace(/```/g, "`\\`\\`");
 }
 
-if(content.length>MAX_FILE_CHARS){
-content=content.slice(0,MAX_FILE_CHARS)+"\n\n// [TRUNCATED]\n";
+function setStatus(msg) {
+  status.textContent = msg || "";
 }
 
-const lang=detectFenceLang(name);
-const escaped=escapeBackticks(content);
+function buildOutputBlock(name, content) {
+  const lang = detectFenceLang(name);
+  const escaped = escapeBackticks(content);
 
-parts.push(
-`===== FILE: ${name} =====
-
-\`\`\`${lang}
-${escaped}
-\`\`\`
-
-`
-);
-
-included++;
-
+  return (
+    `===== FILE: ${name} =====\n\n` +
+    `\`\`\`${lang}\n` +
+    `${escaped}\n` +
+    `\`\`\`\n`
+  );
 }
 
-const result=parts.join("\n");
-
-output.value=result||"// No readable files.";
-
-const blob=new Blob([result],{type:"text/plain"});
-const url=URL.createObjectURL(blob);
-
-downloadLink.href=url;
-downloadLink.download=file.name.replace(/\.zip$/i,"")+"-ai-view.txt";
-downloadLink.style.display="inline-block";
-
-setStatus(`Done: ${included} files, skipped ${skipped}`);
-
-}catch(err){
-
-console.error(err);
-alert("Zip processing error");
-setStatus("Error");
-
-}finally{
-
-processBtn.disabled=false;
-
+function getOutputFileName(zipFileName) {
+  return zipFileName.replace(/\.zip$/i, "") + "-ai-view.txt";
 }
 
+processBtn.addEventListener("click", async () => {
+  const file = zipInput.files[0];
+
+  if (!file) {
+    alert("Chọn file zip trước");
+    return;
+  }
+
+  processBtn.disabled = true;
+  downloadLink.style.display = "none";
+  output.value = "";
+  setStatus("Processing zip...");
+
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const zip = await JSZip.loadAsync(arrayBuffer);
+
+    const entries = Object.values(zip.files).sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+
+    const parts = [];
+    let included = 0;
+    let skipped = 0;
+
+    for (const entry of entries) {
+      if (entry.dir) {
+        continue;
+      }
+
+      const name = normalizePath(entry.name);
+
+      if (isBlacklisted(name)) {
+        skipped++;
+        continue;
+      }
+
+      let content;
+      try {
+        content = await entry.async("string");
+      } catch (err) {
+        skipped++;
+        continue;
+      }
+
+      if (content.length > MAX_FILE_CHARS) {
+        content = content.slice(0, MAX_FILE_CHARS) + "\n\n// [TRUNCATED]\n";
+      }
+
+      parts.push(buildOutputBlock(name, content));
+      included++;
+    }
+
+    const result = parts.length > 0 ? parts.join("\n") : "// No readable files.";
+    output.value = result;
+
+    const blob = new Blob([result], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+
+    downloadLink.href = url;
+    downloadLink.download = getOutputFileName(file.name);
+    downloadLink.style.display = "inline-block";
+
+    setStatus(`Done: ${included} files included, ${skipped} skipped`);
+  } catch (err) {
+    console.error(err);
+    alert("Zip processing error");
+    setStatus("Error");
+  } finally {
+    processBtn.disabled = false;
+  }
 });
-
 </script>
 
 </body>
