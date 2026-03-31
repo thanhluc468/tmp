@@ -160,7 +160,7 @@ textarea{
   </h1>
 
   <p class="sub">
-    Upload <code>.zip</code> source → tool sẽ merge toàn bộ file <code>.php</code> vào 1 file thân thiện cho AI.
+    Upload <code>.zip</code> source → tool sẽ merge toàn bộ file <code>.php</code>, <code>.js</code>, <code>.html</code> vào 1 file thân thiện cho AI.
   </p>
 
   <div class="controls">
@@ -184,11 +184,15 @@ textarea{
 
 <script>
 const WHITELISTED_EXTENSIONS = new Set([
-  ".php"
+  ".php",
+  ".js",
+  ".html"
 ]);
 
 const LANG_MAP = {
-  php: "php"
+  php: "php",
+  js: "javascript",
+  html: "html"
 };
 
 const zipInput = document.getElementById("zipInput");
@@ -252,7 +256,7 @@ function buildOutputBlock(name, content) {
 }
 
 function getOutputFileName(zipFileName) {
-  return zipFileName.replace(/\.zip$/i, "") + ".txt";
+  return zipFileName.replace(/\.zip$/i, "") + "-ai-view.txt";
 }
 
 processBtn.addEventListener("click", async () => {
@@ -304,7 +308,7 @@ processBtn.addEventListener("click", async () => {
       included++;
     }
 
-    const result = parts.length > 0 ? parts.join("\n") : "// No readable .php files.";
+    const result = parts.length > 0 ? parts.join("\n") : "// No readable .php/.js/.html files.";
     output.value = result;
 
     const blob = new Blob([result], { type: "text/plain;charset=utf-8" });
