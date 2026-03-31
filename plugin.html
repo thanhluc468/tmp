@@ -160,7 +160,7 @@ textarea{
   </h1>
 
   <p class="sub">
-    Upload <code>.zip</code> source → tool sẽ merge toàn bộ file text vào 1 file thân thiện cho AI.
+    Upload <code>.zip</code> source → tool sẽ merge toàn bộ file <code>.php</code> vào 1 file thân thiện cho AI.
   </p>
 
   <div class="controls">
@@ -183,43 +183,12 @@ textarea{
 </div>
 
 <script>
-const MAX_FILE_CHARS = 200000;
-
-const BLACKLISTED_EXTENSIONS = new Set([
-  ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tiff", ".ico", ".css",
-  ".svg", ".avif",
-  ".ttf", ".otf", ".woff", ".woff2", ".eot",
-  ".mp3", ".wav", ".ogg", ".flac", ".m4a",
-  ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".webm",
-  ".zip", ".tar", ".gz", ".tgz", ".bz2", ".7z", ".rar", ".phar", ".br",
-  ".exe", ".dll", ".so", ".dylib", ".bin", ".obj", ".o", ".class",
-  ".db", ".sqlite", ".sqlite3", ".mdb",
-  ".pdf", ".doc", ".docx", ".ppt", ".pptx", ".xls", ".xlsx",
-  ".mo", ".map"
-]);
-
-const BLACKLISTED_FILENAMES = new Set([
-  ".ds_store", "thumbs.db", ".gitkeep"
+const WHITELISTED_EXTENSIONS = new Set([
+  ".php"
 ]);
 
 const LANG_MAP = {
-  php: "php",
-  js: "js",
-  jsx: "jsx",
-  ts: "ts",
-  tsx: "tsx",
-  html: "html",
-  css: "css",
-  scss: "scss",
-  less: "less",
-  json: "json",
-  md: "md",
-  txt: "txt",
-  yml: "yaml",
-  yaml: "yaml",
-  xml: "xml",
-  sql: "sql",
-  sh: "bash"
+  php: "php"
 };
 
 const zipInput = document.getElementById("zipInput");
@@ -244,21 +213,16 @@ function getExtension(path) {
   return dotIndex >= 0 ? base.slice(dotIndex) : "";
 }
 
-function isBlacklisted(name) {
+function isWhitelisted(name) {
   const lower = normalizePath(name).toLowerCase();
-  const base = getBaseName(lower);
   const ext = getExtension(lower);
-  return BLACKLISTED_EXTENSIONS.has(ext) || BLACKLISTED_FILENAMES.has(base);
+  return WHITELISTED_EXTENSIONS.has(ext);
 }
 
 function detectFenceLang(name) {
   const base = getBaseName(name);
-
-  if (base === "dockerfile") {
-    return "dockerfile";
-  }
-
   const parts = base.split(".");
+
   if (parts.length < 2) {
     return "";
   }
@@ -323,7 +287,7 @@ processBtn.addEventListener("click", async () => {
 
       const name = normalizePath(entry.name);
 
-      if (isBlacklisted(name)) {
+      if (!isWhitelisted(name)) {
         skipped++;
         continue;
       }
@@ -336,15 +300,11 @@ processBtn.addEventListener("click", async () => {
         continue;
       }
 
-      if (content.length > MAX_FILE_CHARS) {
-        content = content.slice(0, MAX_FILE_CHARS) + "\n\n// [TRUNCATED]\n";
-      }
-
       parts.push(buildOutputBlock(name, content));
       included++;
     }
 
-    const result = parts.length > 0 ? parts.join("\n") : "// No readable files.";
+    const result = parts.length > 0 ? parts.join("\n") : "// No readable .php files.";
     output.value = result;
 
     const blob = new Blob([result], { type: "text/plain;charset=utf-8" });
