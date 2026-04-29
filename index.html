@@ -387,7 +387,7 @@ ${escaped}
 
         downloadLink.href = url;
         downloadLink.download =
-          (file.name || "source").replace(/\.zip$/i, "") + "-ai-view.txt";
+          (file.name || "source").replace(/\.zip$/i, "") + ".txt";
         downloadLink.style.display = "inline-block";
 
         setStatus(`Done: ${includedCount} file text, skipped ${skippedCount} file (binary / CSS / thư mục rác).`);
